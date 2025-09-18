@@ -39,9 +39,6 @@ public class DrawPileGUI extends StackPane implements PileGUI {
             CartaGUI cartaGUI = new CartaGUI(carta);
             cartaGUI.getCarta().makeFaceDown(); // asegurar que se muestre volteada
             cartaGUI.actualizarImagen();
-            // al hacer click en la imagen no queremos seleccionar (el click del mazo ya está manejado),
-            // pero consumimos el evento para evitar burbujeo.
-            //cartaGUI.setOnMouseClicked(e -> e.consume());
             getChildren().add(cartaGUI);
         } else {
             Rectangle placeholder = new Rectangle(110, 150);

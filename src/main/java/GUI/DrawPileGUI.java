@@ -20,7 +20,7 @@ public class DrawPileGUI extends StackPane implements PileGUI {
         // clic en el mazo: sacar cartas o recargar si está vacío
         setOnMouseClicked(e -> {
             if (drawPile.hayCartas()) {
-                ArrayList<CartaInglesa> robadas = drawPile.retirarCartas();
+                CartaInglesa[] robadas = drawPile.retirarCartas();
                 gui.getWastePile().addCartas(robadas);
             } else {
                 gui.recargarDrawPile();

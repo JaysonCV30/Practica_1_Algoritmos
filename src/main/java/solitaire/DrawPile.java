@@ -2,20 +2,21 @@ package solitaire;
 
 import DeckOfCards.CartaInglesa;
 
-import java.util.ArrayList;
-
 /**
  * Modela un mazo de cartas de solitario.
  * @author Cecilia Curlango
  * @version 2025
  */
 public class DrawPile {
-    private ArrayList<CartaInglesa> cartas;
+    private Pila<CartaInglesa> cartas;
     private int cuantasCartasSeEntregan = 3;
 
     public DrawPile() {
         DeckOfCards.Mazo mazo = new DeckOfCards.Mazo();
-        cartas = mazo.getCartas();
+        cartas = new Pila<>();
+        for(CartaInglesa carta : mazo.getCartas()){
+            cartas.push(carta);
+        }
         setCuantasCartasSeEntregan(3);
     }
 
@@ -44,10 +45,10 @@ public class DrawPile {
      * @param cantidad de cartas que se quieren a retirar
      * @return cartas retiradas
      */
-    public ArrayList<CartaInglesa> getCartas(int cantidad) {
-        ArrayList<CartaInglesa> retiradas = new ArrayList<>();
+    public CartaInglesa[] getCartas(int cantidad) {
+        CartaInglesa[] retiradas = new CartaInglesa[cantidad];
         for (int i = 0; i < cantidad; i++) {
-            retiradas.add(cartas.remove(0));
+            retiradas[i] = cartas.pop();
         }
         return retiradas;
     }
@@ -58,14 +59,14 @@ public class DrawPile {
      * que se configuró inicialmente.
      * @return Cartas retiradas.
      */
-    public ArrayList<CartaInglesa> retirarCartas() {
-        ArrayList<CartaInglesa> retiradas = new ArrayList<>();
+    public CartaInglesa[] retirarCartas() {
         int maximoARetirar = cartas.size() < cuantasCartasSeEntregan ? cartas.size() : cuantasCartasSeEntregan;
-
+        CartaInglesa[] retiradas = new CartaInglesa[maximoARetirar];
+        
         for (int i = 0; i < maximoARetirar; i++) {
-            CartaInglesa retirada = cartas.remove(0);
+            CartaInglesa retirada = cartas.pop();
             retirada.makeFaceUp();
-            retiradas.add(retirada);
+            retiradas[i] = retirada;
         }
         return retiradas;
     }
@@ -80,8 +81,8 @@ public class DrawPile {
 
     public CartaInglesa verCarta() {
         CartaInglesa regresar = null;
-        if (!cartas.isEmpty()) {
-            regresar = cartas.getLast();
+        if (!cartas.pila_vacia()) {
+            regresar = cartas.getElemento(cartas.getTope());
         }
         return regresar;
     }
@@ -90,16 +91,16 @@ public class DrawPile {
      * para que no se vean las caras.
      * @param cartasAgregar cartas que se agregan
      */
-    public void recargar(ArrayList<CartaInglesa> cartasAgregar) {
-        cartas = cartasAgregar;
-        for (CartaInglesa aCarta : cartas) {
-            aCarta.makeFaceDown();
+    public void recargar(CartaInglesa[] cartasAgregar) {
+        for (CartaInglesa carta : cartasAgregar) {
+            carta.makeFaceDown();
+            cartas.push(carta);
         }
     }
 
     @Override
     public String toString() {
-        if (cartas.isEmpty()) {
+        if (cartas.pila_vacia()) {
             return "-E-";
         }
         return "@";

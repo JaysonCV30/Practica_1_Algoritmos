@@ -33,7 +33,7 @@ public class SolitaireGame {
      * Move cards from Waste pile to Draw Pile.
      */
     public void reloadDrawPile() {
-        ArrayList<CartaInglesa> cards = wastePile.emptyPile();
+        CartaInglesa[] cards = wastePile.emptyPile();
         drawPile.recargar(cards);
     }
 
@@ -41,7 +41,7 @@ public class SolitaireGame {
      * Move cards from Draw pile to Waste Pile.
      */
     public void drawCards() {
-        ArrayList<CartaInglesa> cards = drawPile.retirarCartas();
+        CartaInglesa[] cards = drawPile.retirarCartas();
         wastePile.addCartas(cards);
     }
 
@@ -212,7 +212,13 @@ public class SolitaireGame {
     private void createTableaux() {
         for (int i = 0; i < 7; i++) {
             TableauDeck tableauDeck = new TableauDeck();
-            tableauDeck.inicializar(drawPile.getCartas(i + 1));
+            CartaInglesa[] cartasIniciales = drawPile.getCartas(i + 1);
+            
+            ArrayList<CartaInglesa> listaDeCartas = new ArrayList<>();
+            for(CartaInglesa carta : cartasIniciales){
+                listaDeCartas.add(carta);
+            }
+            tableauDeck.inicializar(listaDeCartas);
             tableau.add(tableauDeck);
         }
     }

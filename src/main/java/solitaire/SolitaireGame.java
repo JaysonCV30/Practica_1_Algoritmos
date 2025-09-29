@@ -316,7 +316,8 @@ public class SolitaireGame {
                 if (m.getOrigen() instanceof DrawPile draw
                         && m.getDestino() instanceof WastePile waste) {
 
-                    for (CartaInglesa carta : m.getCartasMovidas()) {
+                    for (int i = m.getCartasMovidas().size() - 1; i >= 0; i--) {
+                        CartaInglesa carta = m.getCartasMovidas().get(i);
                         waste.removerCarta(carta);
                         draw.agregarCartaAlInicio(carta);
                     }

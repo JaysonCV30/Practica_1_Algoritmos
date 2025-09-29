@@ -54,7 +54,7 @@ public class SolitaireGUI extends Application {
             actualizarEstadoBotonDeshacer();
         });
         actualizarEstadoBotonDeshacer();
-        
+
         BorderPane root = new BorderPane();
         root.setTop(zonaSuperior);
         root.setCenter(zonaInferior);
@@ -71,10 +71,14 @@ public class SolitaireGUI extends Application {
         stage.show();
     }
 
-    public void actualizarEstadoBotonDeshacer(){
+    public void actualizarEstadoBotonDeshacer() {
         botonDeshacer.setDisable(juego.historialVacio());
     }
-    
+
+    public SolitaireGame getJuego() {
+        return juego;
+    }
+
     public void sacudirCarta(CartaGUI cartaGUI) {
         TranslateTransition shake = new TranslateTransition(Duration.millis(100), cartaGUI);
         shake.setFromX(-10);

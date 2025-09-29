@@ -110,13 +110,14 @@ public class DrawPile {
 
     public void agregarCartaAlInicio(CartaInglesa carta) {
         Pila<CartaInglesa> nuevaPila = new Pila<>(cartas.size() + 1);
-        nuevaPila.push(carta); // primero la nueva carta
 
         while (!cartas.pila_vacia()) {
             nuevaPila.push(cartas.pop());
         }
-
-        cartas = nuevaPila;
+        while (!nuevaPila.pila_vacia()) {
+            cartas.push(nuevaPila.pop());
+        }
+        cartas.push(carta);
     }
 
     public void removerCarta(CartaInglesa carta) {

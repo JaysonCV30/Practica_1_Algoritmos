@@ -17,8 +17,8 @@ public class WastePile {
     }
 
     public void addCartas(CartaInglesa[] nuevas) {
-        for (CartaInglesa carta : nuevas) {
-            cartas.push(carta);
+        for (int i = nuevas.length - 1; i >= 0; i--) {
+            cartas.push(nuevas[i]);
         }
     }
 

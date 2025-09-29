@@ -20,6 +20,7 @@ public class SolitaireGame {
     FoundationDeck lastFoundationUpdated;
     DrawPile drawPile;
     WastePile wastePile;
+    private Pila<Movimiento> historialMovimientos = new Pila<>(100);
 
     public SolitaireGame() {
         drawPile = new DrawPile();
@@ -98,7 +99,7 @@ public class SolitaireGame {
             }
 
         }
-        
+
         return movimientoRealizado;
     }
 
@@ -213,9 +214,9 @@ public class SolitaireGame {
         for (int i = 0; i < 7; i++) {
             TableauDeck tableauDeck = new TableauDeck();
             CartaInglesa[] cartasIniciales = drawPile.getCartas(i + 1);
-            
+
             ArrayList<CartaInglesa> listaDeCartas = new ArrayList<>();
-            for(CartaInglesa carta : cartasIniciales){
+            for (CartaInglesa carta : cartasIniciales) {
                 listaDeCartas.add(carta);
             }
             System.out.println("Tableau " + (i + 1) + " recibió " + listaDeCartas.size() + " cartas.");
@@ -244,6 +245,71 @@ public class SolitaireGame {
         return lastFoundationUpdated;
     }
 
+    public void registrarMovimiento(Movimiento m) {
+        historialMovimientos.push(m);
+    }
+
+    public void deshacerUltimoMovimiento() {
+        if (!historialMovimientos.pila_vacia()) {
+            Movimiento m = historialMovimientos.pop();
+            revertirMovimiento(m);
+        }
+    }
+
+    public void revertirMovimiento(Movimiento m) {
+        switch (m.getTipo()) {
+            case MOVER_CARTA -> {
+                Object origen = m.getOrigen();
+                Object destino = m.getDestino();
+
+                if (origen instanceof TableauDeck tOrigen && destino instanceof FoundationDeck fDestino) {
+                    for (CartaInglesa carta : m.getCartasMovidas()) {
+                        fDestino.removerCarta(carta);
+                        tOrigen.agregarCartaSinValidacion(carta);
+                    }
+                } else if (origen instanceof WastePile wOrigen && destino instanceof FoundationDeck fDestino) {
+                    for (CartaInglesa carta : m.getCartasMovidas()) {
+                        fDestino.removerCarta(carta);
+                        wOrigen.agregarCarta(carta);
+                    }
+                } else if (origen instanceof TableauDeck tOrigen && destino instanceof TableauDeck tDestino) {
+                    for (CartaInglesa carta : m.getCartasMovidas()) {
+                        tDestino.removerCarta(carta);
+                    }
+                    tOrigen.agregarBloqueSinValidacion(m.getCartasMovidas());
+                } else if (origen instanceof WastePile wOrigen && destino instanceof TableauDeck tDestino) {
+                    for (CartaInglesa carta : m.getCartasMovidas()) {
+                        tDestino.removerCarta(carta);
+                        wOrigen.agregarCarta(carta);
+                    }
+                }
+                m.restaurarEstadoCartas();
+            }
+            case SACAR_DEL_MAZO -> {
+                if (m.getOrigen() instanceof DrawPile draw
+                        && m.getDestino() instanceof WastePile waste) {
+
+                    for (CartaInglesa carta : m.getCartasMovidas()) {
+                        waste.removerCarta(carta);
+                        draw.agregarCartaAlInicio(carta);
+                    }
+                    m.restaurarEstadoCartas();
+                }
+            }
+            case RECARGAR_MAZO -> {
+                if (m.getOrigen() instanceof WastePile waste
+                        && m.getDestino() instanceof DrawPile draw) {
+
+                    for (CartaInglesa carta : m.getCartasMovidas()) {
+                        draw.removerCarta(carta);
+                        waste.agregarCarta(carta);
+                    }
+                    m.restaurarEstadoCartas();
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
@@ -269,5 +335,4 @@ public class SolitaireGame {
         str.append(drawPile);
         return str.toString();
     }
-
 }

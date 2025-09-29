@@ -13,6 +13,7 @@ import java.util.Iterator;
  * @version 2025
  */
 public class TableauDeck {
+
     ArrayList<CartaInglesa> cartas = new ArrayList<>();
 
     /**
@@ -62,9 +63,8 @@ public class TableauDeck {
     }
 
     /**
-     * Agrega una carta volteada al montículo. Sólo la agrega si:
-     * A) es la siguiente carta en la secuencia
-     * B) está vacio y la carta es un Rey
+     * Agrega una carta volteada al montículo. Sólo la agrega si: A) es la
+     * siguiente carta en la secuencia B) está vacio y la carta es un Rey
      *
      * @param carta que se intenta almancenar
      * @return true si se pudo guardar la carta, false si no
@@ -125,8 +125,9 @@ public class TableauDeck {
     }
 
     /**
-     * Agrega un bloque de cartas al Tableau si la primera carta de las cartas recibidas
-     * es de color alterno a la última carta del tableau y también es la siguiente.
+     * Agrega un bloque de cartas al Tableau si la primera carta de las cartas
+     * recibidas es de color alterno a la última carta del tableau y también es
+     * la siguiente.
      *
      * @param cartasRecibidas
      * @return true si se pudo agregar el bloque, false si no
@@ -147,7 +148,7 @@ public class TableauDeck {
     }
 
     /**
-     * Indica si está vacío  el Tableau
+     * Indica si está vacío el Tableau
      *
      * @return true si no tiene cartas restantes, false si tiene cartas.
      */
@@ -156,7 +157,8 @@ public class TableauDeck {
     }
 
     /**
-     * Verifica si la carta que recibe puede ser la siguiente del tableau actual.
+     * Verifica si la carta que recibe puede ser la siguiente del tableau
+     * actual.
      *
      * @param cartaInicialDePrueba
      * @return true si puede ser la siguiente, false si no
@@ -181,6 +183,7 @@ public class TableauDeck {
 
     /**
      * Obtiene la última carta del Tableau sin removerla.
+     *
      * @return última carta, null si no hay cartas
      */
     public CartaInglesa getUltimaCarta() {
@@ -193,5 +196,17 @@ public class TableauDeck {
 
     public ArrayList<CartaInglesa> getCards() {
         return cartas;
+    }
+
+    public void removerCarta(CartaInglesa carta) {
+        cartas.remove(carta);
+    }
+
+    public void agregarCartaSinValidacion(CartaInglesa carta) {
+        cartas.add(carta);
+    }
+
+    public void agregarBloqueSinValidacion(ArrayList<CartaInglesa> bloque) {
+        cartas.addAll(bloque);
     }
 }

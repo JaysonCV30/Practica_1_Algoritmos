@@ -4,13 +4,13 @@ import DeckOfCards.CartaInglesa;
 import DeckOfCards.Palo;
 
 /**
- * Modela un monículo donde se ponen las cartas
- * de un solo palo.
+ * Modela un monículo donde se ponen las cartas de un solo palo.
  *
  * @author Cecilia M. Curlango
  * @version 2025
  */
 public class FoundationDeck {
+
     Palo palo;
     Pila<CartaInglesa> cartas;
 
@@ -29,9 +29,8 @@ public class FoundationDeck {
     }
 
     /**
-     * Agrega una carta al montículo. Sólo la agrega si
-     * la carta es del palo del montículo y el la siguiente
-     * carta en la secuencia.
+     * Agrega una carta al montículo. Sólo la agrega si la carta es del palo del
+     * montículo y el la siguiente carta en la secuencia.
      *
      * @param carta que se intenta almancenar
      * @return true si se pudo guardar la carta, false si no
@@ -73,7 +72,7 @@ public class FoundationDeck {
             builder.append("---");
         } else {
             for (int i = 0; i <= cartas.getTope(); i++) {
-               builder.append(cartas.getElemento(i).toString());
+                builder.append(cartas.getElemento(i).toString());
             }
         }
         return builder.toString();
@@ -81,6 +80,7 @@ public class FoundationDeck {
 
     /**
      * Determina si hay cartas en el Foundation.
+     *
      * @return true hay al menos una carta, false no hay cartas
      */
     public boolean estaVacio() {
@@ -89,6 +89,7 @@ public class FoundationDeck {
 
     /**
      * Obtiene la última carta del Foundation sin removerla.
+     *
      * @return última carta, null si no hay cartas
      */
     public CartaInglesa getUltimaCarta() {
@@ -97,5 +98,27 @@ public class FoundationDeck {
             ultimaCarta = cartas.peek();
         }
         return ultimaCarta;
+    }
+
+    public void removerCarta(CartaInglesa carta) {
+        Pila<CartaInglesa> temporal = new Pila<>(cartas.size());
+        boolean encontrada = false;
+
+        while (!cartas.pila_vacia()) {
+            CartaInglesa actual = cartas.pop();
+            if (!encontrada && actual.equals(carta)) {
+                encontrada = true; // no la agregamos
+            } else {
+                temporal.push(actual);
+            }
+        }
+
+        while (!temporal.pila_vacia()) {
+            cartas.push(temporal.pop());
+        }
+    }
+
+    public void agregarCartaSinValidacion(CartaInglesa carta) {
+        cartas.push(carta);
     }
 }

@@ -65,7 +65,7 @@ public class SolitaireGUI extends Application {
         shake.setToX(10);
         shake.setCycleCount(4);
         shake.setAutoReverse(true);
-        shake.setOnFinished(e -> cartaGUI.setTranslateX(0)); 
+        shake.setOnFinished(e -> cartaGUI.setTranslateX(0));
         shake.play();
     }
 
@@ -130,7 +130,7 @@ public class SolitaireGUI extends Application {
         if (origen instanceof TableauDeck && destinoPile instanceof TableauDeck) {
             int fuente = juego.getTableau().indexOf((TableauDeck) origen);
             int destinoIndex = juego.getTableau().indexOf((TableauDeck) destinoPile);
-            movimientoExitoso = juego.moveTableauToTableau(fuente + 1, destinoIndex + 1); 
+            movimientoExitoso = juego.moveTableauToTableau(fuente + 1, destinoIndex + 1);
         }
 
         if (movimientoExitoso) {

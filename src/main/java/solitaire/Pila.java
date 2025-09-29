@@ -10,6 +10,11 @@ public class Pila<T> {
         pila = (T[]) new Object[52];
     }
 
+    public Pila(int capacidad) {
+        this.tope = -1;
+        pila = (T[]) new Object[capacidad];
+    }
+
     // Devuelve el índice actual del tope
     public int getTope() {
         return tope;
@@ -39,9 +44,11 @@ public class Pila<T> {
             return dato;
         }
     }
-    
+
     public T peek() {
-        if (pila_vacia()) return null;
+        if (pila_vacia()) {
+            return null;
+        }
         return pila[tope];
     }
 
@@ -52,8 +59,8 @@ public class Pila<T> {
     public boolean pila_vacia() {
         return (tope == -1);
     }
-    
-    public int size(){
+
+    public int size() {
         return tope + 1;
     }
 

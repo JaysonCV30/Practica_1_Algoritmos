@@ -36,6 +36,14 @@ public class SolitaireGame {
     public void reloadDrawPile() {
         CartaInglesa[] cards = wastePile.emptyPile();
         drawPile.recargar(cards);
+
+        ArrayList<CartaInglesa> cartasMovidas = new ArrayList<>();
+        for (CartaInglesa carta : cards) {
+            cartasMovidas.add(carta);
+        }
+
+        Movimiento m = new Movimiento(wastePile, drawPile, cartasMovidas, Movimiento.TipoMovimiento.RECARGAR_MAZO);
+        registrarMovimiento(m);
     }
 
     /**
@@ -44,6 +52,14 @@ public class SolitaireGame {
     public void drawCards() {
         CartaInglesa[] cards = drawPile.retirarCartas();
         wastePile.addCartas(cards);
+
+        ArrayList<CartaInglesa> cartasMovidas = new ArrayList<>();
+        for (CartaInglesa carta : cards) {
+            cartasMovidas.add(carta);
+        }
+
+        Movimiento m = new Movimiento(drawPile, wastePile, cartasMovidas, Movimiento.TipoMovimiento.SACAR_DEL_MAZO);
+        registrarMovimiento(m);
     }
 
     /**
@@ -53,12 +69,18 @@ public class SolitaireGame {
      * @return true si se pudo hacer el movimiento, false si no
      */
     public boolean moveWasteToTableau(int tableauDestino) {
-        boolean movimientoRealizado = false;
         TableauDeck destino = tableau.get(tableauDestino - 1);
-        if (moveWasteToTableau(destino)) {
-            movimientoRealizado = true;
+        CartaInglesa carta = wastePile.verCarta();
+
+        if (moveCartaToTableau(carta, destino)) {
+            carta = wastePile.getCarta(); // ya fue retirada
+            ArrayList<CartaInglesa> cartasMovidas = new ArrayList<>();
+            cartasMovidas.add(carta);
+            Movimiento m = new Movimiento(wastePile, destino, cartasMovidas, Movimiento.TipoMovimiento.MOVER_CARTA);
+            registrarMovimiento(m);
+            return true;
         }
-        return movimientoRealizado;
+        return false;
     }
 
     /**
@@ -72,34 +94,33 @@ public class SolitaireGame {
     public boolean moveTableauToTableau(int tableauFuente, int tableauDestino) {
         boolean movimientoRealizado = false;
         TableauDeck fuente = tableau.get(tableauFuente - 1);
-        if (!fuente.isEmpty()) {
-            TableauDeck destino = tableau.get(tableauDestino - 1);
+        TableauDeck destino = tableau.get(tableauDestino - 1);
 
-            int valorQueDebeTenerLaCartaInicialDeLaFuente;
-            CartaInglesa cartaUltimaDelDestino; // aqui se coloca la fuente
-            if (!destino.isEmpty()) {
-                // si hay cartas en el destino, la ultima y primer debe concordar
-                cartaUltimaDelDestino = destino.verUltimaCarta();
-                valorQueDebeTenerLaCartaInicialDeLaFuente = cartaUltimaDelDestino.getValor() - 1;
-            } else {
-                // si el destino está vacío, solo puede colocar rey
-                valorQueDebeTenerLaCartaInicialDeLaFuente = 13;
-            }
-            // ver que carta es la del inicio del bloque
-            CartaInglesa cartaInicialDePrueba = fuente.viewCardStartingAt(valorQueDebeTenerLaCartaInicialDeLaFuente);
-            if (cartaInicialDePrueba != null && destino.sePuedeAgregarCarta(cartaInicialDePrueba)) {
-                ArrayList<CartaInglesa> cartas = fuente.removeStartingAt(valorQueDebeTenerLaCartaInicialDeLaFuente);
+        if (!fuente.isEmpty()) {
+            int valorEsperado = destino.isEmpty() ? 13 : destino.verUltimaCarta().getValor() - 1;
+            CartaInglesa cartaInicio = fuente.viewCardStartingAt(valorEsperado);
+
+            if (cartaInicio != null && destino.sePuedeAgregarCarta(cartaInicio)) {
+                ArrayList<CartaInglesa> cartas = fuente.removeStartingAt(valorEsperado);
+
+                // Capturar carta que se va a voltear antes de hacerlo
+                CartaInglesa cartaVolteada = fuente.verUltimaCarta();
+                boolean seVolteara = cartaVolteada != null && !cartaVolteada.isFaceup();
+
                 if (destino.agregarBloqueDeCartas(cartas)) {
-                    if (!fuente.isEmpty()) {
-                        // Voltear la carta que se destapa en el Tableau
-                        fuente.verUltimaCarta().makeFaceUp();
+                    if (!fuente.isEmpty() && seVolteara) {
+                        cartaVolteada.makeFaceUp();
                     }
+
+                    Movimiento m = new Movimiento(fuente, destino, cartas, Movimiento.TipoMovimiento.MOVER_CARTA);
+                    if (seVolteara) {
+                        m.getEstadoOriginal().put(cartaVolteada, false); // estaba boca abajo
+                    }
+                    registrarMovimiento(m);
                     movimientoRealizado = true;
                 }
             }
-
         }
-
         return movimientoRealizado;
     }
 
@@ -110,17 +131,19 @@ public class SolitaireGame {
      * @return true si se pudo move la carta, false si no
      */
     public boolean moveTableauToFoundation(int numero) {
-        boolean movimientoRealizado = false;
-
         TableauDeck fuente = tableau.get(numero - 1);
         CartaInglesa carta = fuente.removerUltimaCarta();
+
         if (moveCartaToFoundation(carta)) {
-            movimientoRealizado = true;
+            ArrayList<CartaInglesa> cartasMovidas = new ArrayList<>();
+            cartasMovidas.add(carta);
+            Movimiento m = new Movimiento(fuente, lastFoundationUpdated, cartasMovidas, Movimiento.TipoMovimiento.MOVER_CARTA);
+            registrarMovimiento(m);
+            return true;
         } else {
-            // regresar la carta al tableau porque no se puede hacer el movimiento
-            fuente.agregarCarta(carta);
+            fuente.agregarCarta(carta); // revertir si no se pudo
+            return false;
         }
-        return movimientoRealizado;
     }
 
     /**
@@ -129,16 +152,18 @@ public class SolitaireGame {
      * @param tableau donde se moverá la carta
      * @return true si se pudo move la carta, false si no
      */
-    public boolean moveWasteToTableau(TableauDeck tableau) {
-        boolean movimientoRealizado = false;
-
+    public boolean moveWasteToTableau(TableauDeck destino) {
         CartaInglesa carta = wastePile.verCarta();
-        if (moveCartaToTableau(carta, tableau)) {
-            // si es movimiento válido, elimina la carta de la pila
+
+        if (moveCartaToTableau(carta, destino)) {
             carta = wastePile.getCarta();
-            movimientoRealizado = true;
+            ArrayList<CartaInglesa> cartasMovidas = new ArrayList<>();
+            cartasMovidas.add(carta);
+            Movimiento m = new Movimiento(wastePile, destino, cartasMovidas, Movimiento.TipoMovimiento.MOVER_CARTA);
+            registrarMovimiento(m);
+            return true;
         }
-        return movimientoRealizado;
+        return false;
     }
 
     /**
@@ -147,15 +172,17 @@ public class SolitaireGame {
      * @return true si se pudo hacer el movimiento.
      */
     public boolean moveWasteToFoundation() {
-        boolean movimientoRealizado = false;
-
         CartaInglesa carta = wastePile.verCarta();
+
         if (moveCartaToFoundation(carta)) {
-            // si es movimiento válido, elimina la carta de la pila
             carta = wastePile.getCarta();
-            movimientoRealizado = true;
+            ArrayList<CartaInglesa> cartasMovidas = new ArrayList<>();
+            cartasMovidas.add(carta);
+            Movimiento m = new Movimiento(wastePile, lastFoundationUpdated, cartasMovidas, Movimiento.TipoMovimiento.MOVER_CARTA);
+            registrarMovimiento(m);
+            return true;
         }
-        return movimientoRealizado;
+        return false;
     }
 
     /**
@@ -308,6 +335,10 @@ public class SolitaireGame {
                 }
             }
         }
+    }
+
+    public boolean historialVacio() {
+        return historialMovimientos.pila_vacia();
     }
 
     @Override

@@ -2,9 +2,10 @@ package solitaire;
 
 import DeckOfCards.CartaInglesa;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Movimiento {
-    
+
     // enum es una "clase" especial que representa un grupo de constantes
     public enum TipoMovimiento {
         MOVER_CARTA,
@@ -17,17 +18,16 @@ public class Movimiento {
     private ArrayList<CartaInglesa> cartasMovidas;
     private boolean[] estadosPrevios; // true si estaba faceup, false si estaba facedown
     private TipoMovimiento tipo;
+    private HashMap<CartaInglesa, Boolean> estadoOriginal = new HashMap<>();
 
     public Movimiento(Object origen, Object destino, ArrayList<CartaInglesa> cartasMovidas, TipoMovimiento tipo) {
         this.origen = origen;
         this.destino = destino;
         this.cartasMovidas = cartasMovidas;
         this.tipo = tipo;
-        this.estadosPrevios = new boolean[cartasMovidas.size()];
 
-        // Guardamos el estado previo de cada carta
-        for (int i = 0; i < cartasMovidas.size(); i++) {
-            estadosPrevios[i] = cartasMovidas.get(i).isFaceup();
+        for (CartaInglesa carta : cartasMovidas) {
+            estadoOriginal.put(carta, carta.isFaceup());
         }
     }
 
@@ -37,6 +37,10 @@ public class Movimiento {
 
     public Object getDestino() {
         return destino;
+    }
+
+    public HashMap<CartaInglesa, Boolean> getEstadoOriginal() {
+        return estadoOriginal;
     }
 
     public ArrayList<CartaInglesa> getCartasMovidas() {
@@ -52,22 +56,24 @@ public class Movimiento {
     }
 
     public void restaurarEstadoCartas() {
-        for (int i = 0; i < cartasMovidas.size(); i++) {
-            if (estadosPrevios[i]) {
-                cartasMovidas.get(i).makeFaceUp();
+        for (HashMap.Entry<CartaInglesa, Boolean> entry : estadoOriginal.entrySet()) {
+            CartaInglesa carta = entry.getKey();
+            boolean estabaVisible = entry.getValue();
+            if (estabaVisible) {
+                carta.makeFaceUp();
             } else {
-                cartasMovidas.get(i).makeFaceDown();
+                carta.makeFaceDown();
             }
         }
     }
 
     @Override
     public String toString() {
-        return "Movimiento{" +
-                "tipo=" + tipo +
-                ", cartas=" + cartasMovidas +
-                ", origen=" + origen +
-                ", destino=" + destino +
-                '}';
+        return "Movimiento{"
+                + "tipo=" + tipo
+                + ", cartas=" + cartasMovidas
+                + ", origen=" + origen
+                + ", destino=" + destino
+                + '}';
     }
 }

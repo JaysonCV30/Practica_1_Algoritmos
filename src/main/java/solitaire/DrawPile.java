@@ -46,8 +46,11 @@ public class DrawPile {
      * @return cartas retiradas
      */
     public CartaInglesa[] getCartas(int cantidad) {
-        CartaInglesa[] retiradas = new CartaInglesa[cantidad];
-        for (int i = 0; i < cantidad; i++) {
+        int disponibles = cartas.size();
+        int cantidadReal = Math.min(cantidad, disponibles);
+        
+        CartaInglesa[] retiradas = new CartaInglesa[cantidadReal];
+        for (int i = 0; i < cantidadReal; i++) {
             retiradas[i] = cartas.pop();
         }
         return retiradas;

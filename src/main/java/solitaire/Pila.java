@@ -7,7 +7,7 @@ public class Pila<T> {
 
     public Pila() {
         this.tope = -1;
-        pila = (T[]) new Object[7];
+        pila = (T[]) new Object[52];
     }
 
     // Devuelve el índice actual del tope

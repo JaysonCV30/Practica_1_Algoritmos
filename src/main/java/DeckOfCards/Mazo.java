@@ -14,6 +14,7 @@ public class Mazo {
     public Mazo() {
         llenar(); // crea todas las cartas, excluyendo Jokers
         mezclar();
+        System.out.println("Cartas generadas: " + cartas.size());
     }
 
     /**

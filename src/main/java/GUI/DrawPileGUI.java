@@ -5,7 +5,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import DeckOfCards.CartaInglesa;
-import java.util.ArrayList;
 
 public class DrawPileGUI extends StackPane implements PileGUI {
 

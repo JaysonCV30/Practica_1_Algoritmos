@@ -218,6 +218,7 @@ public class SolitaireGame {
             for(CartaInglesa carta : cartasIniciales){
                 listaDeCartas.add(carta);
             }
+            System.out.println("Tableau " + (i + 1) + " recibió " + listaDeCartas.size() + " cartas.");
             tableauDeck.inicializar(listaDeCartas);
             tableau.add(tableauDeck);
         }

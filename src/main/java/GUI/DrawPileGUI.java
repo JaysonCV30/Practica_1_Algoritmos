@@ -25,6 +25,7 @@ public class DrawPileGUI extends StackPane implements PileGUI {
                 gui.recargarDrawPile();
             }
             gui.actualizarTodo();
+            gui.recargarDrawPile();
             e.consume();
         });
     }

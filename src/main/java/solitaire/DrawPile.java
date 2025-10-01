@@ -102,9 +102,13 @@ public class DrawPile {
      * @param cartasAgregar cartas que se agregan
      */
     public void recargar(CartaInglesa[] cartasAgregar) {
-        for (CartaInglesa carta : cartasAgregar) {
-            carta.makeFaceDown();
-            cartas.push(carta);
+        // Vaciar la pila
+        while (!cartas.pila_vacia()) {
+            cartas.pop();
+        }
+        for (int i = cartasAgregar.length - 1; i >= 0; i--) {
+            cartasAgregar[i].makeFaceDown();
+            cartas.push(cartasAgregar[i]);
         }
     }
 

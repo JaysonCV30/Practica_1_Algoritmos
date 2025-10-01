@@ -7,6 +7,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 
 public class WastePileGUI extends StackPane implements PileGUI {
+
     private WastePile waste;
     private SolitaireGUI gui;
 
@@ -29,7 +30,15 @@ public class WastePileGUI extends StackPane implements PileGUI {
             CartaGUI cartaGUI = new CartaGUI(carta);
             // al hacer click en la carta del waste seleccionarla como origen
             cartaGUI.setOnMouseClicked(e -> {
-                gui.seleccionarCarta(cartaGUI, this);
+                if (gui.hayCartaSeleccionada()) {
+                    if (gui.getCartaSeleccionada() == cartaGUI) {
+                        gui.deseleccionarCarta(); // ← deselecciona si ya estaba seleccionada
+                    } else {
+                        gui.pileClicked(this); // ← intenta mover la carta seleccionada al Waste
+                    }
+                } else {
+                    gui.seleccionarCarta(cartaGUI, this); // ← selecciona la carta del Waste
+                }
                 e.consume();
             });
             getChildren().add(cartaGUI);

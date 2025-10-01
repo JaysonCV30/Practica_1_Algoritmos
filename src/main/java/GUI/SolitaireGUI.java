@@ -3,6 +3,8 @@ package GUI;
 import DeckOfCards.CartaInglesa;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -47,6 +49,9 @@ public class SolitaireGUI extends Application {
 
         HBox zonaInferior = new HBox(20, tableauxGUI[0], tableauxGUI[1], tableauxGUI[2], tableauxGUI[3], tableauxGUI[4], tableauxGUI[5], tableauxGUI[6]);
 
+        VBox layoutPrincipal = new VBox(40);
+        layoutPrincipal.getChildren().addAll(zonaSuperior, zonaInferior);
+
         botonDeshacer = new Button("Deshacer");
         botonDeshacer.setOnAction(e -> {
             juego.deshacerUltimoMovimiento(); // revierte el movimiento
@@ -55,14 +60,13 @@ public class SolitaireGUI extends Application {
         });
         actualizarEstadoBotonDeshacer();
 
-        BorderPane root = new BorderPane();
-        root.setTop(zonaSuperior);
-        root.setCenter(zonaInferior);
-        VBox layoutPrincipal = new VBox(40); // 40 px de separación vertical
-        layoutPrincipal.getChildren().addAll(zonaSuperior, zonaInferior);
         HBox controlesInferiores = new HBox(20, botonDeshacer);
-        layoutPrincipal.getChildren().add(controlesInferiores);
+        controlesInferiores.setPadding(new Insets(10));
+        controlesInferiores.setAlignment(Pos.CENTER_LEFT);
+
+        BorderPane root = new BorderPane();
         root.setCenter(layoutPrincipal);
+        root.setBottom(controlesInferiores);
 
         Scene scene = new Scene(root, 950, 900);
         scene.setFill(Color.DARKGREEN);

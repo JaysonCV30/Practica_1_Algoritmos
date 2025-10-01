@@ -34,18 +34,17 @@ public class TableauDeck {
      * @param value of starting card to remove
      * @return removed cards or empty ArrayList if it is not possible to remove.
      */
-    public ArrayList<CartaInglesa> removeStartingAt(int value) {
+    public ArrayList<CartaInglesa> removeStartingAt(int value, SolitaireGame juego) {
         ArrayList<CartaInglesa> removed = new ArrayList<>();
         Iterator<CartaInglesa> iterator = cartas.iterator();
         while (iterator.hasNext()) {
             CartaInglesa next = iterator.next();
-            if (next.isFaceup()) {
-                if (next.getValor() <= value) {
-                    removed.add(next);
-                    iterator.remove();
-                }
+            if (next.isFaceup() && next.getValor() <= value) {
+                removed.add(next);
+                iterator.remove();
             }
         }
+        voltearCartaSuperiorSiEsNecesario(juego);
         return removed;
     }
 
@@ -98,15 +97,12 @@ public class TableauDeck {
      *
      * @return la carta que removió, null si estaba vacio
      */
-    CartaInglesa removerUltimaCarta() {
+    CartaInglesa removerUltimaCarta(SolitaireGame juego) {
         CartaInglesa ultimaCarta = null;
         if (!cartas.isEmpty()) {
             ultimaCarta = cartas.getLast();
             cartas.remove(ultimaCarta);
-            if (!cartas.isEmpty()) {
-                // voltea la siguiente carta del tableau
-                cartas.getLast().makeFaceUp();
-            }
+            voltearCartaSuperiorSiEsNecesario(juego); // ← aquí
         }
         return ultimaCarta;
     }
@@ -208,5 +204,17 @@ public class TableauDeck {
 
     public void agregarBloqueSinValidacion(ArrayList<CartaInglesa> bloque) {
         cartas.addAll(bloque);
+    }
+
+    public void voltearCartaSuperiorSiEsNecesario(SolitaireGame juego) {
+        if (!cartas.isEmpty()) {
+            CartaInglesa cartaSuperior = cartas.getLast();
+            if (!cartaSuperior.isFaceup()) {
+                Movimiento m = new Movimiento(this, this, new ArrayList<>(), Movimiento.TipoMovimiento.VOLTEAR_CARTA);
+                m.getEstadoOriginal().put(cartaSuperior, false); // estaba faceDown
+                cartaSuperior.makeFaceUp(); // ahora se voltea
+                juego.registrarMovimiento(m); // registra el cambio visual
+            }
+        }
     }
 }

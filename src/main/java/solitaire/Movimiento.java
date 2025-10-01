@@ -10,7 +10,8 @@ public class Movimiento {
     public enum TipoMovimiento {
         MOVER_CARTA,
         SACAR_DEL_MAZO,
-        RECARGAR_MAZO
+        RECARGAR_MAZO,
+        VOLTEAR_CARTA
     }
 
     private Object origen; // Puede ser TableauDeck, DrawPile, WastePile, etc.

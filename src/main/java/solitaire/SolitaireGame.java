@@ -27,7 +27,6 @@ public class SolitaireGame {
         wastePile = new WastePile();
         createTableaux();
         createFoundations();
-        wastePile.addCartas(drawPile.retirarCartas());
     }
 
     /**
@@ -108,7 +107,7 @@ public class SolitaireGame {
             CartaInglesa cartaInicio = fuente.viewCardStartingAt(valorEsperado);
 
             if (cartaInicio != null && destino.sePuedeAgregarCarta(cartaInicio)) {
-                ArrayList<CartaInglesa> cartas = fuente.removeStartingAt(valorEsperado);
+                ArrayList<CartaInglesa> cartas = fuente.removeStartingAt(valorEsperado, this);
 
                 // Capturar carta que se va a voltear antes de hacerlo
                 CartaInglesa cartaVolteada = fuente.verUltimaCarta();
@@ -139,7 +138,7 @@ public class SolitaireGame {
      */
     public boolean moveTableauToFoundation(int numero) {
         TableauDeck fuente = tableau.get(numero - 1);
-        CartaInglesa carta = fuente.removerUltimaCarta();
+        CartaInglesa carta = fuente.removerUltimaCarta(this);
 
         if (moveCartaToFoundation(carta)) {
             ArrayList<CartaInglesa> cartasMovidas = new ArrayList<>();
@@ -340,6 +339,9 @@ public class SolitaireGame {
                     }
                     m.restaurarEstadoCartas();
                 }
+            }
+            case VOLTEAR_CARTA -> {
+                m.restaurarEstadoCartas();
             }
         }
     }

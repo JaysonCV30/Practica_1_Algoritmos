@@ -51,14 +51,21 @@ public class SolitaireGame {
      */
     public void drawCards() {
         CartaInglesa[] cards = drawPile.retirarCartas();
-        wastePile.addCartas(cards);
-
         ArrayList<CartaInglesa> cartasMovidas = new ArrayList<>();
-        for (CartaInglesa carta : cards) {
+        Movimiento m = new Movimiento(drawPile, wastePile, new ArrayList<>(), Movimiento.TipoMovimiento.SACAR_DEL_MAZO);
+
+        for (int i = cards.length - 1; i >= 0; i--) {
+            CartaInglesa carta = cards[i];
+
+            // Guardar el estado visual ANTES de modificarlo (aunque en este caso ya viene faceUp)
+            m.getEstadoOriginal().put(carta, false); // ← asumimos que estaban faceDown en el DrawPile
+
+            // Ya están faceUp por retirarCartas(), pero si no lo estuvieran, aquí lo harías
             cartasMovidas.add(carta);
         }
 
-        Movimiento m = new Movimiento(drawPile, wastePile, cartasMovidas, Movimiento.TipoMovimiento.SACAR_DEL_MAZO);
+        wastePile.addCartas(cards); // se agregan en orden inverso en WastePile
+        m.getCartasMovidas().addAll(cartasMovidas);
         registrarMovimiento(m);
     }
 

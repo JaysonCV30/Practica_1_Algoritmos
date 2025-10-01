@@ -20,7 +20,7 @@ public class SolitaireGame {
     FoundationDeck lastFoundationUpdated;
     DrawPile drawPile;
     WastePile wastePile;
-    private Pila<Movimiento> historialMovimientos = new Pila<>(100);
+    private Pila<Movimiento> historialMovimientos = new Pila<>(300);
 
     public SolitaireGame() {
         drawPile = new DrawPile();
@@ -323,10 +323,9 @@ public class SolitaireGame {
                 if (m.getOrigen() instanceof DrawPile draw
                         && m.getDestino() instanceof WastePile waste) {
 
-                    for (int i = m.getCartasMovidas().size() - 1; i >= 0; i--) {
-                        CartaInglesa carta = m.getCartasMovidas().get(i);
+                    for (CartaInglesa carta : m.getCartasMovidas()) {
                         waste.removerCarta(carta);
-                        draw.agregarCartaAlInicio(carta);
+                        draw.agregarCartaAlTope(carta);
                     }
                     m.restaurarEstadoCartas();
                 }

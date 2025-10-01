@@ -108,15 +108,7 @@ public class DrawPile {
         }
     }
 
-    public void agregarCartaAlInicio(CartaInglesa carta) {
-        Pila<CartaInglesa> nuevaPila = new Pila<>(cartas.size() + 1);
-
-        while (!cartas.pila_vacia()) {
-            nuevaPila.push(cartas.pop());
-        }
-        while (!nuevaPila.pila_vacia()) {
-            cartas.push(nuevaPila.pop());
-        }
+    public void agregarCartaAlTope(CartaInglesa carta) {
         cartas.push(carta);
     }
 

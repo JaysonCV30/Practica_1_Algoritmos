@@ -200,6 +200,20 @@ public class SolitaireGUI extends Application {
         }
     }
 
+    public void comerDesdeDrawPile() {
+        // Si hay una carta seleccionada del WastePile, deseleccionarla
+        if (hayCartaSeleccionada() && origenSeleccionado instanceof WastePileGUI) {
+            deseleccionarCarta(); // limpia selección lógica y visual
+        }
+
+        // Comer cartas desde la lógica
+        juego.drawCards();
+
+        // Refrescar la interfaz
+        actualizarTodo();
+        actualizarEstadoBotonDeshacer();
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

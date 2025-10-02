@@ -10,6 +10,7 @@ public class WastePileGUI extends StackPane implements PileGUI {
 
     private WastePile waste;
     private SolitaireGUI gui;
+    private CartaGUI cartaVisible;
 
     public WastePileGUI(WastePile waste, SolitaireGUI gui) {
         this.waste = waste;
@@ -27,21 +28,21 @@ public class WastePileGUI extends StackPane implements PileGUI {
         getChildren().clear();
         CartaInglesa carta = waste.verCarta();
         if (carta != null) {
-            CartaGUI cartaGUI = new CartaGUI(carta);
+            cartaVisible = new CartaGUI(carta);
             // al hacer click en la carta del waste seleccionarla como origen
-            cartaGUI.setOnMouseClicked(e -> {
+            cartaVisible.setOnMouseClicked(e -> {
                 if (gui.hayCartaSeleccionada()) {
-                    if (gui.getCartaSeleccionada() == cartaGUI) {
+                    if (gui.getCartaSeleccionada() == cartaVisible) {
                         gui.deseleccionarCarta(); // ← deselecciona si ya estaba seleccionada
                     } else {
                         gui.pileClicked(this); // ← intenta mover la carta seleccionada al Waste
                     }
                 } else {
-                    gui.seleccionarCarta(cartaGUI, this); // ← selecciona la carta del Waste
+                    gui.seleccionarCarta(cartaVisible, this); // ← selecciona la carta del Waste
                 }
                 e.consume();
             });
-            getChildren().add(cartaGUI);
+            getChildren().add(cartaVisible);
         } else {
             Rectangle placeholder = new Rectangle(110, 150);
             placeholder.setFill(Color.TRANSPARENT);
@@ -49,6 +50,12 @@ public class WastePileGUI extends StackPane implements PileGUI {
             placeholder.setArcWidth(10);
             placeholder.setArcHeight(10);
             getChildren().add(placeholder);
+        }
+    }
+
+    public void deseleccionarCartaVisible() {
+        if (cartaVisible != null && cartaVisible.estaSeleccionada()) {
+            cartaVisible.seleccionar(false);
         }
     }
 

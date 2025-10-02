@@ -55,11 +55,7 @@ public class SolitaireGame {
 
         for (int i = cards.length - 1; i >= 0; i--) {
             CartaInglesa carta = cards[i];
-
-            // Guardar el estado visual ANTES de modificarlo (aunque en este caso ya viene faceUp)
-            m.getEstadoOriginal().put(carta, false); // ← asumimos que estaban faceDown en el DrawPile
-
-            // Ya están faceUp por retirarCartas(), pero si no lo estuvieran, aquí lo harías
+            m.getEstadoOriginal().put(carta, false); 
             cartasMovidas.add(carta);
         }
 
